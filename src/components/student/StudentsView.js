@@ -44,12 +44,10 @@ const StudentsView = () => {
                             <td>{student.lastName}</td>
                             <td>{student.email}</td>
                             <td>{student.department}</td>
-                            <td>
                             <td className='mx-2'><button className='btn btn-secondary'>Create</button></td>
                             <td className='mx-2'><button className='btn btn-info'>View</button></td>
                             <td className='mx-2'><button className='btn btn-primary'>Edit</button></td>
                             <td className='mx-2'><button className='btn btn-danger'>Delete</button></td>
-                            </td>
                         </tr>
                     ))}
                 </tbody>
