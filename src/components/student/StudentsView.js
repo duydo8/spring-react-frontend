@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import SearchStudent from './SearchStudent';
 
 const StudentsView = () => {
   const [students, setStudents] = useState([]);
-  const [isDeleting, setIsDeleting] = useState(false);
-
+  const [search, setSearch] = useState('');
   useEffect(() => {
     loadStudents();
   }, []);
@@ -22,8 +22,6 @@ const StudentsView = () => {
   };
 
   const handleDelete = async (id) => {
-    if (isDeleting) return; // Ngăn gọi nhiều lần nếu đang xoá
-    setIsDeleting(true);
     try {
       await axios.delete('http://localhost:9095/api/student/deleteById/', {
         params: { id }
@@ -32,13 +30,12 @@ const StudentsView = () => {
       setStudents(prevStudents => prevStudents.filter(student => student.id !== id));
     } catch (error) {
       console.error("Error deleting student:", error);
-    } finally {
-      setIsDeleting(false);
     }
   };
 
   return (
     <div>
+      <SearchStudent search={search} setSearch={setSearch} />
       <table className='table table-bordered table-hover shadow'>
         <thead>
           <tr className='text-center'>
@@ -51,26 +48,30 @@ const StudentsView = () => {
           </tr>
         </thead>
         <tbody className='text-center'>
-          {students && students.map((student, index) => (
-            <tr key={student.id}>
-              <th scope='row'>{index + 1}</th>
-              <td>{student.firstName}</td>
-              <td>{student.lastName}</td>
-              <td>{student.email}</td>
-              <td>{student.department}</td>
-              <td className='mx-2'>
-                <Link to={`/student-profile/${student.id}`} className='btn btn-info'><FaEye /></Link>
-              </td>
-              <td className='mx-2'>
-                <Link to={`/edit-student/${student.id}`} className='btn btn-warning'><FaEdit /></Link>
-              </td>
-              <td className='mx-2'>
-                <button onClick={() => handleDelete(student.id)} className='btn btn-danger'>
-                  <FaTrashAlt />
-                </button>
-              </td>
-            </tr>
-          ))}
+          {students && students
+            .filter((s) =>
+              search ? s.firstName.toLowerCase().includes(search.toLowerCase()) : true
+            )
+            .map((student, index) => (
+              <tr key={student.id}>
+                <th scope='row'>{index + 1}</th>
+                <td>{student.firstName}</td>
+                <td>{student.lastName}</td>
+                <td>{student.email}</td>
+                <td>{student.department}</td>
+                <td className='mx-2'>
+                  <Link to={`/student-profile/${student.id}`} className='btn btn-info'><FaEye /></Link>
+                </td>
+                <td className='mx-2'>
+                  <Link to={`/edit-student/${student.id}`} className='btn btn-warning'><FaEdit /></Link>
+                </td>
+                <td className='mx-2'>
+                  <button onClick={() => handleDelete(student.id)} className='btn btn-danger'>
+                    <FaTrashAlt />
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
