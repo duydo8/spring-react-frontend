@@ -3,7 +3,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/common/NavBar';
-import StudentRoute from './components/route/StudentRoute.js';
+import StudentRoute from "./components/route/StudentRoute";
 
 function App() {
   return (
